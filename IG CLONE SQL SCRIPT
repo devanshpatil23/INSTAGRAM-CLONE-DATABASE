@@ -1,0 +1,55 @@
+select * from comments;  
+SELECT * FROM follows;
+SELECT * FROM likes;
+SELECT * FROM photo_tags;
+SELECT * FROM photos;
+SELECT * FROM tags;
+SELECT * FROM users;
+
+-- 5 Oldest users --
+
+SELECT * FROM users
+ORDER BY created_at
+LIMIT 5;
+
+-- Find the users who have never posted a photo -- 
+ SELECT username 
+ FROM users
+ LEFT JOIN photos ON users.id = photos.user_id
+WHERE photos.id IS NULL;
+
+ -- We are running a new contest to see who can get the most likes on a single photo.Lets See Who Won? --
+ 
+SELECT user_id
+FROM likes
+LEFT JOIN photo_tags
+ON likes.photo_id = photo_tags.photo_id
+GROUP BY user_id
+HAVING max(likes.photo_id) 
+ORDER BY max(likes.photo_id) DESC
+LIMIT 1;
+
+SELECT username
+FROM users
+WHERE id = 12; 
+ 
+
+-- Find users who have never commented on a photo --
+
+SELECT u.username, c.comment_text
+FROM users u
+LEFT JOIN comments c ON u.id = c.user_id
+WHERE c.comment_text IS NULL OR c.comment_text = ''
+ORDER BY u.username;
+
+SELECT COUNT(*) AS total_number_of_users_without_comments
+FROM (
+    SELECT u.username
+    FROM users u
+    LEFT JOIN comments c ON u.id = c.user_id
+    GROUP BY u.id
+    HAVING COUNT(c.comment_text) = 0 OR COUNT(c.comment_text) IS NULL
+) AS subquery;
+
+
+ 
